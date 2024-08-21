@@ -1,7 +1,8 @@
 <?php
 require_once 'modelos.php'; //Requerimos el archivo de clases modelo.php
+
 if(isset($_GET['tabla'])){  // Si está seteada GET['tabla']
-    $tabla= new ModeloABM($_GET['tabla']); // Creamos el objeto $tabla desde la clase ModeloABM
+    $tabla= new Modelo($_GET['tabla']); // Creamos el objeto $tabla desde la clase ModeloABM
     if(isset($_GET['criterio'])){
         $tabla->setCriterio($_GET['criterio']);
     }
@@ -16,6 +17,7 @@ if(isset($_GET['tabla'])){  // Si está seteada GET['tabla']
             // $valores = $_POST;
             $jvalores= file_get_contents("php://input"); // Tomamos los valores que vienen del POST en formato JSON
             $valores= json_decode($jvalores); // Convertimos los valores JSON a Array Asociativo
+            
         }
         switch($_GET['accion']){
             case 'seleccionar':

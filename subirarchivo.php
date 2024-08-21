@@ -5,7 +5,7 @@
     $json = file_get_contents('php://input'); // RECIBE EL JSON DE ANGULAR
     
     $params = json_decode($json); // DECODIFICA EL JSON Y LO GUARADA EN LA VARIABLE
-    
+
     $nombre = $params->nombre;
     $nombreArchivo = $params->nombreArchivo;
     $archivo = $params->base64textString;
@@ -14,8 +14,10 @@
     $filePath = "./img/productos/".$nombreArchivo;
     file_put_contents($filePath, $archivo);
     
-    
-    class Result {}
+    class Result {
+        public $resultado;
+        public $mensaje;
+    }
     // GENERA LOS DATOS DE RESPUESTA
     $response = new Result();
     

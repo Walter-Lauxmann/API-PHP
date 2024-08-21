@@ -12,7 +12,7 @@ if($method == "OPTIONS") {
 }
 
 /* Clase principal */
-class Modelo{ 
+class Conexion{ 
     // Definimos la propiedad _db
     protected $_db; 
     // Creamos el constructor con la conexión a la Base de Datos
@@ -31,7 +31,7 @@ class Modelo{
 /* Fin de la clase principal */
 
 /* Clase ModeloABM basada en Modelo */
-class ModeloABM extends Modelo{
+class Modelo extends Conexion{
     protected $tabla;          // nombre de la tabla
     protected $id= 0;          // id del registro
     protected $criterio= '';   // criterio para las consultas
