@@ -85,11 +85,6 @@ class Modelo extends Conexion{
         $this->json = $json;
     }
 
-    // Método de conexión 
-    public function conexion(){
-        return $this->_db;
-    }
-
     // Método para seleccionar, entre paréntesis establecemos los parámetros
     public function seleccionar(){
         // SELECT * FROM productos WHERE id = '10' ORDER BY id LIMIT 10
@@ -113,55 +108,39 @@ class Modelo extends Conexion{
         
         // Si $json es verdadero
         if ($this->json){
-            $json_datos = json_encode($datos) ; // Convertimos los datos en formato JSON
-            /*
-            $json_datos = str_replace('\\','',$json_datos);
-            $json_datos = str_replace('"{','{',$json_datos);
-            $json_datos = str_replace('}"','}',$json_datos);
-            */
-            return $json_datos ; // Retornamos los datos en formato JSON
-        }
-        // Sino
-        else{ 
-            return $datos; // Retornamos los datos en formato array asociativo
+            $datos = json_encode($datos) ; // Convertimos los datos en formato JSON
         }        
+        return $datos; // Retornamos los datos     
     }
 
     // Método para la inserción de datos
-    public function insertar($valores){
+    public function insertar($datos){
         // INSERT INTO productos(codigo,nombre,descripcion,precio,stock,imagen, id_proveedor)
         // VALUES ('201','Motorola G9', 'Un gran teléfono', '45000','10','motorolag9.jpg','1')
-        $atributos='';
-        $datos='';
-        unset($valores->id);
-        // Para cada $valores como $key => $value
-        foreach ($valores as $key => $value) {
-            $value= "'".$value."'"; // Agregamos apóstrofe (') antes y después de cada $value
-            $atributos .= $key.","; // Agregamos a la variable $campo el $key y una coma (,)
-            $datos .= $value.",";  // Agregamos a la variable $datos el $value y una coma (,)
-        }        
-        $atributos= substr($atributos,0,strlen($atributos)-1); // Quitamos el último caracter (,) a $atributos
-        $datos= substr($datos,0,strlen($datos)-1);    // Quitamos el último caracter (,) a $datos
+        unset($datos->id);
+        $campos = implode(",", array_keys($datos));
+        $valores = implode("','", array_values($datos));
+        
         // Guardamos en la variable $sql la instrucción INSERT
-        $sql="INSERT INTO $this->tabla($atributos) VALUES($datos)"; // INSERTAR DENTRO de $tabla en los ($atributos) los VALORES de ($datos)
+        $sql="INSERT INTO $this->tabla($campos) VALUES($valores)"; // INSERTAR DENTRO de $tabla en los ($campos) los VALORES ($valores)
         echo $sql.'<br />'; // Mostramos la instrucción sql resultante
-        $resultado = $this->_db->query($sql); // Ejecutamos la consulta la guardamos en $resultado
+        $this->_db->query($sql); // Ejecutamos la consulta 
     }
 
     // Método para la actualización de datos
-    public function actualizar($valores){
+    public function actualizar($datos){
         // UPDATE productos SET precio = '35600' WHERE id='10'
-        $sql="UPDATE $this->tabla SET "; // ACTUALIZAR $tabla ESTABLECIENDO
-        // Para cada $valores como $key => $value
-        foreach ($valores as $key => $value) {
-            // Agregamos a la instrucción los campos ($key) y los valores ($value)
-            $sql .= $key."='".$value."',"; 
+
+        $actualizaciones = [];        
+        // Para cada $datos como $key => $value
+        foreach ($datos as $key => $value) {
+            $actualizaciones[] = "$key => $value"; 
         }
-        $sql= substr($sql,0,strlen($sql)-1); // Quitamos el último caracter (,) a $sql
-        // Agregamos a la instrucción el criterio
-        $sql .= " WHERE $this->criterio"; // DONDE $criterio
+
+        $sql="UPDATE $this->tabla SET" . implode(",", $actualizaciones) . " WHERE $this->criterio"; // ACTUALIZAR $tabla ESTABLECIENDO
+
         echo $sql.'<br />'; // Mostramos la instruccón sql resultante
-        $resultado = $this->_db->query($sql); // Ejecutamos la consulta la guardamos en $resultado
+        $this->_db->query($sql); // Ejecutamos la consulta 
     }
 
     // Método para la eliminación de datos
@@ -169,7 +148,7 @@ class Modelo extends Conexion{
         // DELETE FROM productos WHERE id='10'
         // Guardamos en la variable $sql la instrucción DELETE
         $sql="DELETE FROM $this->tabla WHERE $this->criterio"; // ELIMINAR DESDE $tabla DONDE $criterio
-        $resultado = $this->_db->query($sql); // Ejecutamos la consulta la guardamos en $resultado
+        $this->_db->query($sql); // Ejecutamos la consulta
     }
 }
 ?> 
