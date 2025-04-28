@@ -30,7 +30,7 @@ class Conexion{
 } 
 /* Fin de la clase principal */
 
-/* Clase ModeloABM basada en Modelo */
+/* Clase ModeloABM basada en Conexion */
 class Modelo extends Conexion{
     protected $tabla;          // nombre de la tabla
     protected $id= 0;          // id del registro
